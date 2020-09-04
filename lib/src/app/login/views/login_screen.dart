@@ -1,81 +1,57 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_pokeapi/src/app/login/widgets/login_app_bar.dart';
 
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        child: ClipPath(
-          clipper: _ClipLoginBar(),
-          child: Container(
-            height: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: 10,
-                height: 10,
-                child: Image(image: AssetImage('lib/assets/pokemon-logo.png')),
-              ),
-            ),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.red[700], Colors.red[800]],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topRight),
-            ),
-          ),
-        ),
-        preferredSize: Size(double.infinity, 300),
-      ),
-      body: Center(
-        child: Text('ois'),
-      ),
-    );
+    return GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(appBar: LoginAppBar(), body: LoginForm()));
   }
 }
 
-class _ClipLoginBar extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-
-    const offsetSize = 50.0;
-
-    path.lineTo(0, size.height - offsetSize);
-
-    final controlPointLeft = Offset(0, size.height);
-    final endPointLeft = Offset(size.width * 0.25, size.height);
-
-    path.quadraticBezierTo(
-      controlPointLeft.dx,
-      controlPointLeft.dy,
-      endPointLeft.dx,
-      endPointLeft.dy,
+// TODO - refatorar
+class LoginForm extends StatelessWidget {
+  void _showFormDialog(BuildContext context, Size mediaQuerySize) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Container(
+            width: mediaQuerySize.width * 0.8,
+            height: mediaQuerySize.height * 0.6,
+            child: Center(child: Text('oi')),
+          ),
+        );
+      },
     );
-
-    path.lineTo(0, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height - offsetSize);
-
-    final controlPointRight = Offset(size.width, size.height);
-    final endPointRight = Offset(size.width * 0.75, size.height);
-
-    path.quadraticBezierTo(
-      controlPointRight.dx,
-      controlPointRight.dy,
-      endPointRight.dx,
-      endPointRight.dy,
-    );
-
-    path.lineTo(size.width * 0.25, size.height);
-
-    return path;
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return oldClipper != this;
+  Widget build(BuildContext context) {
+    final mediaQuerySize = MediaQuery.of(context).size;
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      width: double.infinity,
+      child: Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RaisedButton(
+              color: Theme.of(context).primaryColor,
+              textColor: Colors.white,
+              onPressed: () => _showFormDialog(context, mediaQuerySize),
+              child: Text('Login'),
+            ),
+            SizedBox(height: 5),
+            FlatButton(
+              textColor: Theme.of(context).primaryColor,
+              onPressed: () => _showFormDialog(context, mediaQuerySize),
+              child: Text('Cadastro'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
