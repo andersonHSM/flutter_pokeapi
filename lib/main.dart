@@ -10,7 +10,7 @@ class PokedexApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.red,
-        accentColor: Colors.blue[900],
+        accentColor: Colors.blue[800],
       ),
       routes: {'/': (ctx) => LoginPage()},
     );

@@ -7,45 +7,31 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        child: SafeArea(
-          child: ClipPath(
-            clipper: _ClipLoginBar(),
-            child: Container(
-              height: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: LoginForm(),
+        child: ClipPath(
+          clipper: _ClipLoginBar(),
+          child: Container(
+            height: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 10,
+                height: 10,
+                child: Image(image: AssetImage('lib/assets/pokemon-logo.png')),
               ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.blueGrey, Colors.black26],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topRight),
-              ),
+            ),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Colors.red[700], Colors.red[800]],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topRight),
             ),
           ),
         ),
         preferredSize: Size(double.infinity, 300),
       ),
-    );
-  }
-}
-
-class LoginForm extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'E-mail *',
-            labelStyle: TextStyle(color: Colors.black),
-            focusColor: Colors.black,
-            hoverColor: Colors.black,
-          ),
-        ),
-      ],
+      body: Center(
+        child: Text('ois'),
+      ),
     );
   }
 }
@@ -59,8 +45,8 @@ class _ClipLoginBar extends CustomClipper<Path> {
 
     path.lineTo(0, size.height - offsetSize);
 
-    final controlPointLeft = Offset(offsetSize, size.height);
-    final endPointLeft = Offset(size.width / 2, size.height);
+    final controlPointLeft = Offset(0, size.height);
+    final endPointLeft = Offset(size.width * 0.25, size.height);
 
     path.quadraticBezierTo(
       controlPointLeft.dx,
@@ -69,13 +55,12 @@ class _ClipLoginBar extends CustomClipper<Path> {
       endPointLeft.dy,
     );
 
-    path.close();
-
+    path.lineTo(0, 0);
     path.lineTo(size.width, 0);
     path.lineTo(size.width, size.height - offsetSize);
 
     final controlPointRight = Offset(size.width, size.height);
-    final endPointRight = Offset(size.width / 2, size.height);
+    final endPointRight = Offset(size.width * 0.75, size.height);
 
     path.quadraticBezierTo(
       controlPointRight.dx,
@@ -83,6 +68,8 @@ class _ClipLoginBar extends CustomClipper<Path> {
       endPointRight.dx,
       endPointRight.dy,
     );
+
+    path.lineTo(size.width * 0.25, size.height);
 
     return path;
   }
