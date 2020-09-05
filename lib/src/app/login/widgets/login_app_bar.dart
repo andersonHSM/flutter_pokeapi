@@ -10,7 +10,7 @@ class LoginAppBar extends StatelessWidget with PreferredSizeWidget {
     return PreferredSize(
       preferredSize: Size.fromHeight(300),
       child: ClipPath(
-        clipper: _ClipLoginBar(),
+        clipper: AppBarClipper(),
         child: Container(
           height: double.infinity,
           child: Padding(
@@ -36,7 +36,7 @@ class LoginAppBar extends StatelessWidget with PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(200);
 }
 
-class _ClipLoginBar extends CustomClipper<Path> {
+class AppBarClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
