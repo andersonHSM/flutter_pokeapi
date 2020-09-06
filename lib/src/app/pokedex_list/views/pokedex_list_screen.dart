@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_pokeapi/src/models/pokemon.dart';
-import 'package:flutter_pokeapi/src/utils/type_to_color_mapper.dart';
+import 'package:flutter_pokeapi/src/widgets/pokemon_grid_tile.dart';
 
 class PokedexListScreen extends StatelessWidget {
   @override
@@ -31,12 +31,12 @@ class PokedexListScreen extends StatelessWidget {
                 SliverAppBar(
                   floating: true,
                   pinned: true,
-                  collapsedHeight: 60,
-                  toolbarHeight: 49,
+                  collapsedHeight: mediaQuery.size.height * 0.09,
+                  toolbarHeight: mediaQuery.size.height * 0.08,
                   flexibleSpace: SafeArea(
                     child: Image.asset('lib/assets/pokemon-logo.png'),
                   ),
-                  expandedHeight: 200,
+                  expandedHeight: mediaQuery.size.height * 0.25,
                 ),
                 FutureBuilder(
                   future: rootBundle.loadString('lib/fakeData/fakeApi.json'),
@@ -68,44 +68,7 @@ class PokedexListScreen extends StatelessWidget {
                             (context, index) {
                               final pokemon = list.elementAt(index);
 
-                              return GridTile(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Container(
-                                    color: TypeToColorMapper
-                                        .colorMapper[pokemon.type[0]],
-                                    child: Stack(
-                                      children: [
-                                        Positioned(
-                                          child: Text('${pokemon.name}'),
-                                          left: 15,
-                                          top: 10,
-                                        ),
-                                        Positioned(
-                                            width: 350,
-                                            child: Opacity(
-                                              opacity: 0.05,
-                                              child: ColorFiltered(
-                                                colorFilter: ColorFilter.mode(
-                                                    Colors.white,
-                                                    BlendMode.color),
-                                                child: Image.asset(
-                                                    'lib/assets/pokeball-transparent.png'),
-                                              ),
-                                            )),
-                                        Positioned(
-                                          bottom: -10,
-                                          right: -10,
-                                          child: Image.network(
-                                            "${pokemon.img}",
-                                            scale: 0.9,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
+                              return PokemonGridTile(pokemon: pokemon);
                             },
                             childCount: list.length,
                           ),
