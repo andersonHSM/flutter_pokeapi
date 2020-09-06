@@ -43,7 +43,7 @@ class PokemonGridTile extends StatelessWidget {
                 width: 160,
                 child: LayoutBuilder(
                   builder: (context, constraints) => Container(
-                    width: 150,
+                    width: constraints.maxWidth,
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +98,7 @@ class PokemonGridTile extends StatelessWidget {
                   child: InkWell(
                     customBorder: CircleBorder(),
                     child: Padding(
-                        padding: const EdgeInsets.all(5.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Icon(
                           Icons.arrow_forward,
                           color: Colors.white,
