@@ -66,6 +66,7 @@ class PokemonDetailSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
         alignment: Alignment.bottomCenter,
         children: [
           AppBar(
+            elevation: 0,
             backgroundColor: appBarColor ?? Theme.of(context).primaryColor,
           ),
           Positioned(
