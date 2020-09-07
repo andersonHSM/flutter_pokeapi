@@ -9,7 +9,7 @@ class PokemonDetailSliverAppBar extends StatelessWidget {
   final double collapedHight;
   final double expandedHeight;
   final bool floating;
-  final Image pokemonPhoto;
+  final Widget pokemonPhoto;
 
   const PokemonDetailSliverAppBar({
     Key key,
@@ -40,7 +40,7 @@ class PokemonDetailSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final double collapedHight;
   final double expandedHeight;
   final bool floating;
-  final Image pokemonPhoto;
+  final Widget pokemonPhoto;
 
   PokemonDetailSliverAppBarDelegate({
     this.appBarColor,
@@ -63,12 +63,13 @@ class PokemonDetailSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
       maxExtent: maxExtent,
       currentExtent: currentExtent,
       child: Stack(
-        fit: StackFit.expand,
+        alignment: Alignment.bottomCenter,
         children: [
           AppBar(
             backgroundColor: appBarColor ?? Theme.of(context).primaryColor,
           ),
           Positioned(
+            bottom: 00,
             child: Opacity(
               opacity: pokemonOpacity,
               child: pokemonPhoto,

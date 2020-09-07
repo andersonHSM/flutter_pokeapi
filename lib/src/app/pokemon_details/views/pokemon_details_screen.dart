@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pokeapi/src/app/pokemon_details/widgets/pokemon_detail_app_bar.dart';
 import 'package:flutter_pokeapi/src/models/pokemon.dart';
 import 'package:flutter_pokeapi/src/utils/type_to_color_mapper.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class PokemonDetailsScreen extends StatelessWidget {
   @override
@@ -17,7 +18,26 @@ class PokemonDetailsScreen extends StatelessWidget {
             appBarColor: TypeToColorMapper.colorMapper[pokemon.type[0]],
             collapedHight: 100,
             expandedHeight: 250,
-            pokemonPhoto: Image.network(pokemon.img),
+            pokemonPhoto: Image.network(
+              pokemon.img,
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if (wasSynchronouslyLoaded) {
+                  return child;
+                }
+                return AnimatedOpacity(
+                  child: child,
+                  opacity: frame == null ? 0 : 1,
+                  duration: const Duration(seconds: 1),
+                  curve: Curves.easeOut,
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(
+                  'lib/assets/pokeball-transparent.png',
+                  scale: 4,
+                );
+              },
+            ),
           ),
           SliverGrid(
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
