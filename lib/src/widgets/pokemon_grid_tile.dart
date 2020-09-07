@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pokeapi/src/models/pokemon.dart';
+import 'package:flutter_pokeapi/src/utils/app_routes.dart';
 import 'package:flutter_pokeapi/src/utils/type_to_color_mapper.dart';
 
 class PokemonGridTile extends StatelessWidget {
@@ -41,26 +42,23 @@ class PokemonGridTile extends StatelessWidget {
               ),
               Positioned(
                 width: 160,
-                child: LayoutBuilder(
-                  builder: (context, constraints) => Container(
-                    width: constraints.maxWidth,
+                height: 120,
+                child: LayoutBuilder(builder: (context, constraints) {
+                  final containerWidth = constraints.maxWidth * 0.2;
+                  final containerHigh = constraints.maxHeight * 0.8;
+                  return Container(
+                    width: containerWidth,
+                    height: containerHigh,
                     child: Column(
-                      mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '${pokemon.name}',
-                              style: TextStyle(
-                                fontSize: mediaQuery.size.width * 0.05,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          '${pokemon.name}',
+                          style: TextStyle(
+                            fontSize: mediaQuery.size.width * 0.05,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                         ...pokemon.type.map((type) {
                           return ClipRRect(
@@ -84,8 +82,8 @@ class PokemonGridTile extends StatelessWidget {
                         }).toList()
                       ],
                     ),
-                  ),
-                ),
+                  );
+                }),
                 left: 15,
                 top: 10,
               ),
@@ -104,7 +102,10 @@ class PokemonGridTile extends StatelessWidget {
                           color: Colors.white,
                           size: 24,
                         )),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushNamed(AppRoutes.POKEMON_DETAILS,
+                          arguments: pokemon);
+                    },
                   ),
                 ),
               ),
