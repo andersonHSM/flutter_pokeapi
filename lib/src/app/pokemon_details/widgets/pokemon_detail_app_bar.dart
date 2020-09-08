@@ -3,33 +3,35 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_pokeapi/src/models/pokemon.dart';
 
 class PokemonDetailSliverAppBar extends StatelessWidget {
   final Color appBarColor;
-  final double collapedHight;
+  final double collapsedHeight;
   final double expandedHeight;
   final bool floating;
-  final Widget pokemonPhoto;
+  final Pokemon pokemon;
 
   const PokemonDetailSliverAppBar({
     Key key,
     this.appBarColor,
-    this.collapedHight,
+    this.collapsedHeight,
     this.expandedHeight,
     this.floating = false,
-    this.pokemonPhoto,
+    this.pokemon,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SliverPersistentHeader(
       pinned: true,
+      floating: floating,
       delegate: PokemonDetailSliverAppBarDelegate(
         expandedHeight: expandedHeight,
-        collapedHight: collapedHight,
+        collapsedHeight: collapsedHeight,
         appBarColor: appBarColor,
-        pokemonPhoto: pokemonPhoto,
         floating: floating,
+        pokemon: pokemon,
       ),
     );
   }
@@ -37,17 +39,17 @@ class PokemonDetailSliverAppBar extends StatelessWidget {
 
 class PokemonDetailSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final Color appBarColor;
-  final double collapedHight;
+  final double collapsedHeight;
   final double expandedHeight;
   final bool floating;
-  final Widget pokemonPhoto;
+  final Pokemon pokemon;
 
   PokemonDetailSliverAppBarDelegate({
     this.appBarColor,
-    this.collapedHight,
+    this.collapsedHeight,
     this.expandedHeight,
     this.floating,
-    this.pokemonPhoto,
+    this.pokemon,
   });
 
   @override
@@ -68,13 +70,13 @@ class PokemonDetailSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
           AppBar(
             elevation: 0,
             backgroundColor: appBarColor ?? Theme.of(context).primaryColor,
+            title: Text(pokemon.name),
           ),
           Positioned(
             bottom: 00,
             child: Opacity(
-              opacity: pokemonOpacity,
-              child: pokemonPhoto,
-            ),
+                opacity: pokemonOpacity,
+                child: _PokemonPhoto(pokemon: pokemon)),
           )
         ],
       ),
@@ -87,7 +89,7 @@ class PokemonDetailSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => expandedHeight;
 
   @override
-  double get minExtent => collapedHight;
+  double get minExtent => collapsedHeight;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
@@ -104,8 +106,6 @@ class _FloatingAppBar extends StatefulWidget {
   _FloatingAppBarState createState() => _FloatingAppBarState();
 }
 
-// A wrapper for the widget created by _SliverAppBarDelegate that starts and
-// stops the floating app bar's snap-into-view or snap-out-of-view animation.
 class _FloatingAppBarState extends State<_FloatingAppBar> {
   ScrollPosition _position;
 
@@ -134,9 +134,8 @@ class _FloatingAppBarState extends State<_FloatingAppBar> {
   void _isScrollingListener() {
     if (_position == null) return;
 
-    // When a scroll stops, then maybe snap the appbar into view.
-    // Similarly, when a scroll starts, then maybe stop the snap animation.
     final RenderSliverFloatingPersistentHeader header = _headerRenderer();
+
     if (_position.isScrollingNotifier.value)
       header?.maybeStopSnapAnimation(_position.userScrollDirection);
     else
@@ -145,4 +144,49 @@ class _FloatingAppBarState extends State<_FloatingAppBar> {
 
   @override
   Widget build(BuildContext context) => widget.child;
+}
+
+class _PokemonPhoto extends StatelessWidget {
+  const _PokemonPhoto({
+    Key key,
+    @required this.pokemon,
+  }) : super(key: key);
+
+  final Pokemon pokemon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(
+      pokemon.img,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) {
+          return child;
+        }
+
+        return CircularProgressIndicator(
+          value: loadingProgress.expectedTotalBytes != null
+              ? loadingProgress.cumulativeBytesLoaded /
+                  loadingProgress.expectedTotalBytes
+              : null,
+        );
+      },
+      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+        if (wasSynchronouslyLoaded) {
+          return child;
+        }
+        return AnimatedOpacity(
+          child: child,
+          opacity: frame == null ? 0 : 1,
+          duration: const Duration(seconds: 1),
+          curve: Curves.easeOut,
+        );
+      },
+      errorBuilder: (context, error, stackTrace) {
+        return Image.asset(
+          'lib/assets/pokeball-transparent.png',
+          scale: 4,
+        );
+      },
+    );
+  }
 }
