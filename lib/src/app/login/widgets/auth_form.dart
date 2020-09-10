@@ -7,19 +7,19 @@ class AuthForm extends StatelessWidget {
   AuthForm({@required this.authFormType}) : assert(authFormType != null);
 
   Widget emailField() {
-    return TextFormField(
+    return TextField(
       decoration: InputDecoration(labelText: "E-mail"),
     );
   }
 
   Widget passwordField() {
-    return TextFormField(
+    return TextField(
       decoration: InputDecoration(labelText: "Password"),
     );
   }
 
   Widget confirmPasswordField() {
-    return TextFormField(
+    return TextField(
       decoration: InputDecoration(labelText: "Confirm Password"),
     );
   }
