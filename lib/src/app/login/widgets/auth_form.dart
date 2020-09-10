@@ -1,37 +1,101 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pokeapi/src/app/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_pokeapi/src/app/login/bloc/login_bloc.dart';
 import 'package:flutter_pokeapi/src/app/login/utils/auth_form_type.enum.dart';
+import 'package:flutter_pokeapi/src/app/login/utils/form_status.dart';
 
 class AuthForm extends StatelessWidget {
   final AuthFormType authFormType;
 
   AuthForm({@required this.authFormType}) : assert(authFormType != null);
 
-  Widget emailField() {
-    return TextField(
-      decoration: InputDecoration(labelText: "E-mail"),
+  Widget emailField(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(
+      buildWhen: (previous, current) =>
+          previous.email != current.email ||
+          previous.emailError != current.emailError,
+      builder: (context, state) {
+        return TextField(
+          decoration: InputDecoration(
+            labelText: "E-mail",
+            errorText: state.emailError,
+          ),
+          onChanged: (email) {
+            context.bloc<LoginBloc>().add(LoginEmailChanged(email));
+          },
+        );
+      },
     );
   }
 
-  Widget passwordField() {
-    return TextField(
-      decoration: InputDecoration(labelText: "Password"),
+  Widget passwordField(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(
+      buildWhen: (previous, current) =>
+          previous.password != current.password ||
+          previous.passwordError != current.passwordError,
+      builder: (context, state) {
+        return TextField(
+          decoration: InputDecoration(
+            labelText: "Password",
+            errorText: state.passwordError,
+          ),
+          onChanged: (password) {
+            context.bloc<LoginBloc>().add(LoginPasswordChanged(password));
+          },
+        );
+      },
     );
   }
 
-  Widget confirmPasswordField() {
-    return TextField(
-      decoration: InputDecoration(labelText: "Confirm Password"),
+  Widget confirmPasswordField(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(
+      buildWhen: (previous, current) =>
+          previous.passwordConfirm != current.passwordConfirm ||
+          previous.passwordConfirmError != current.passwordConfirmError,
+      builder: (context, state) {
+        return TextField(
+          decoration: InputDecoration(
+            labelText: "Confirm Password",
+            errorText: state.passwordConfirmError,
+          ),
+          onChanged: (passwordConfirm) {
+            context
+                .bloc<LoginBloc>()
+                .add(LoginPasswordConfirmChanged(passwordConfirm));
+          },
+        );
+      },
     );
   }
 
-  Widget submitButton({Color buttonColor, Color textColor}) {
-    return RaisedButton(
-        onPressed: () {},
-        child: Text(
-          "Submit",
-          style: TextStyle(color: textColor ?? Colors.white),
-        ),
-        color: buttonColor ?? Colors.black);
+  Widget submitButton(BuildContext context,
+      {Color buttonColor, Color textColor}) {
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            RaisedButton(
+                onPressed: state.status == FormStatus.invalid
+                    ? null
+                    : () {
+                        if (authFormType == AuthFormType.signUp) {
+                          context.bloc<LoginBloc>().add(SignupSubmitted());
+                        } else {
+                          context.bloc<LoginBloc>().add(LoginSubmitted());
+                        }
+                      },
+                child: Text(
+                  "Submit",
+                  style: TextStyle(color: textColor ?? Colors.white),
+                ),
+                color: buttonColor ?? Colors.black),
+            if (state.status == FormStatus.submissionFailure)
+              Text('Request Failure'),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -45,15 +109,16 @@ class AuthForm extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            emailField(),
+            emailField(context),
             SizedBox(height: 10),
-            passwordField(),
+            passwordField(context),
             SizedBox(height: 10),
             if (authFormType == AuthFormType.signUp) ...[
-              confirmPasswordField(),
+              confirmPasswordField(context),
               SizedBox(height: 10),
             ],
             submitButton(
+              context,
               buttonColor: Theme.of(context).primaryColor,
               textColor: Colors.white,
             )

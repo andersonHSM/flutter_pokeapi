@@ -2,6 +2,7 @@ part of 'login_bloc.dart';
 
 @immutable
 class LoginState extends Equatable {
+  final FormStatus status;
   final String email;
   final String emailError;
   final String password;
@@ -10,6 +11,7 @@ class LoginState extends Equatable {
   final String passwordConfirmError;
 
   const LoginState({
+    this.status,
     this.email,
     this.emailError,
     this.password,
@@ -20,6 +22,7 @@ class LoginState extends Equatable {
 
   @override
   List<Object> get props => [
+        status,
         email,
         emailError,
         password,
@@ -29,6 +32,7 @@ class LoginState extends Equatable {
       ];
 
   LoginState copyWith({
+    FormStatus status,
     String email,
     String emailError,
     String password,
@@ -37,17 +41,19 @@ class LoginState extends Equatable {
     String passwordConfirmError,
   }) {
     return LoginState(
+      status: status,
       email: email ?? this.email,
-      emailError: emailError ?? this.emailError,
+      emailError: emailError,
       password: password ?? this.password,
-      passwordError: passwordError ?? this.passwordError,
+      passwordError: passwordError,
       passwordConfirm: passwordConfirm ?? this.passwordConfirm,
-      passwordConfirmError: passwordConfirmError ?? this.passwordConfirmError,
+      passwordConfirmError: passwordConfirmError,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'status': status,
       'email': email,
       'emailError': emailError,
       'password': password,
@@ -61,6 +67,7 @@ class LoginState extends Equatable {
     if (map == null) return null;
 
     return LoginState(
+      status: map['status'],
       email: map['email'],
       emailError: map['emailError'],
       password: map['password'],

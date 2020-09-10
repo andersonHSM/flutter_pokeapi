@@ -27,7 +27,7 @@ class AuthRequest {
     return AuthRequest(
       email: map['email'],
       password: map['password'],
-      returnSecureToken: map['returnSecureToken'],
+      returnSecureToken: map['returnSecureToken'] ?? true,
     );
   }
 

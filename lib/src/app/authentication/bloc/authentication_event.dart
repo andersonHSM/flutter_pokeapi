@@ -9,8 +9,10 @@ abstract class AuthenticationEvent extends Equatable {
 
 class AuthenticationStatusChanged extends AuthenticationEvent {
   final AuthenticationStatus status;
+  final String token;
 
-  const AuthenticationStatusChanged(this.status) : assert(status != null);
+  const AuthenticationStatusChanged(this.status, [this.token])
+      : assert(status != null);
 
   @override
   List<Object> get props => [status];

@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 
 import '../models/models.dart';
 import '../user_repository.dart';
-import '../user_repository.dart';
 
 class UserRepository {
   Dio dio;
@@ -20,7 +19,7 @@ class UserRepository {
 
     final response = await dio.post(requestUrl, data: userInfoRequest.toJson());
 
-    final user = User.fromJson(json.decode(response.data));
+    final user = User.fromMap(response.data);
 
     _user = user;
     return _user;

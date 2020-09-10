@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter_pokeapi/src/app/authentication/bloc/authentication_bloc.dart';
-import 'package:flutter_pokeapi/src/app/login/bloc/login_bloc.dart';
 import 'package:user_repository/user_repository.dart';
 
 import 'package:flutter_pokeapi/src/app/pokemon_details/views/pokemon_details_screen.dart';

@@ -45,7 +45,7 @@ class AuthenticationBloc
       case AuthenticationStatus.unauthenticated:
         return const AuthenticationUnauthenticated();
       case AuthenticationStatus.authenticated:
-        final user = await _tryGetUser();
+        final user = await _tryGetUser(event.token);
 
         if (user == null) {
           return AuthenticationUnauthenticated();
@@ -59,10 +59,11 @@ class AuthenticationBloc
   }
 
   // TODO - IMPLEMENTAR AÇÃO REAL
-  Future<User> _tryGetUser() async {
+  Future<User> _tryGetUser(String idtoken) async {
     try {
       final user =
-          await _userRepository.getUser(UserInfoRequest(idToken: 'null'));
+          await _userRepository.getUser(UserInfoRequest(idToken: idtoken));
+      print(user.toMap());
       return user;
     } on Exception {
       return null;

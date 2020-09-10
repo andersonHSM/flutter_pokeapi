@@ -20,10 +20,32 @@ class AuthenticationRepository {
     yield* _controller.stream;
   }
 
+  Future<SignupReturn> signUp(AuthRequest authRequest) async {
+    if (authRequest.email == null ||
+        authRequest.password == null ||
+        authRequest.returnSecureToken != true) {
+      return null;
+    }
+
+    final signUpUrl =
+        "${AuthenticationRepositoryUtils.signUpUrl}${AuthenticationRepositoryUtils.apiKey}";
+
+    final Response apiResponse =
+        await dio.post(signUpUrl, data: authRequest.toJson());
+
+    final signUpReturn = SignupReturn.fromMap(apiResponse.data);
+
+    _controller.add(AuthenticationStatus.authenticated);
+
+    return signUpReturn;
+  }
+
   Future<SignInReturn> logIn(AuthRequest authRequest) async {
-    assert(authRequest.email != null);
-    assert(authRequest.password != null);
-    assert(authRequest.returnSecureToken == true);
+    if (authRequest.email == null ||
+        authRequest.password == null ||
+        authRequest.returnSecureToken != true) {
+      return null;
+    }
 
     final signInUrl =
         "${AuthenticationRepositoryUtils.signInUrl}${AuthenticationRepositoryUtils.apiKey}";
@@ -31,9 +53,8 @@ class AuthenticationRepository {
     final Response apiReponse =
         await dio.post(signInUrl, data: authRequest.toJson());
 
-    final signInReturn = SignInReturn.fromMap(json.decode(apiReponse.data));
+    final signInReturn = SignInReturn.fromMap(apiReponse.data);
 
-    _controller.add(AuthenticationStatus.authenticated);
     return signInReturn;
   }
 

@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pokeapi/src/app/login/bloc/login_bloc.dart';
 import 'package:flutter_pokeapi/src/app/login/utils/auth_form_type.enum.dart';
 import 'package:flutter_pokeapi/src/app/login/widgets/auth_form.dart';
 
 class AuthDialog extends StatelessWidget {
   void _showFormDialog(BuildContext context, AuthFormType authFormType) {
+    // ignore: close_sinks
+    final bloc = BlocProvider.of<LoginBloc>(context);
+
     showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          child: AuthForm(
-            authFormType: authFormType,
-          ),
-        );
-      },
-    );
+        context: context,
+        builder: (_) {
+          final dialog = Dialog(
+            child: AuthForm(
+              authFormType: authFormType,
+            ),
+          );
+
+          return BlocProvider.value(
+            value: bloc,
+            child: dialog,
+          );
+        });
   }
 
   @override
