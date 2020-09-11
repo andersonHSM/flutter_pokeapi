@@ -6,6 +6,8 @@ import 'package:flutter_pokeapi/src/app/login/bloc/login_bloc.dart';
 import 'package:flutter_pokeapi/src/app/login/views/login_screen.dart';
 import 'package:flutter_pokeapi/src/app/pokedex_list/views/pokedex_list_screen.dart';
 import 'package:flutter_pokeapi/src/repositories/authentication_repository/authentication_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/local_storage_repository/local_storage_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/user_repository/models/models.dart';
 import 'package:flutter_pokeapi/src/repositories/user_repository/user_repository.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -23,6 +25,8 @@ class HomeScreen extends StatelessWidget {
             authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
             authenticationRepository:
                 RepositoryProvider.of<AuthenticationRepository>(context),
+            localUserRepository:
+                RepositoryProvider.of<HiveRepository<User>>(context),
           ),
           child: LoginPage(),
         );

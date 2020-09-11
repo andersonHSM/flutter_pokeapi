@@ -8,6 +8,13 @@ abstract class LoginEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class LoginTryAutoLogin extends LoginEvent {
+  const LoginTryAutoLogin();
+
+  @override
+  List<Object> get props => [];
+}
+
 class LoginReset extends LoginEvent {
   const LoginReset();
 

@@ -4,10 +4,10 @@ import '../models/models.dart';
 import './utils.dart';
 
 class UserRepository {
-  Dio dio;
+  Dio _dio;
   User _user;
 
-  UserRepository() : dio = Dio();
+  UserRepository() : _dio = Dio();
 
   Future<User> getUser(UserInfoRequest userInfoRequest) async {
     if (_user != null) return _user;
@@ -15,7 +15,8 @@ class UserRepository {
     final requestUrl =
         "${UserRepositoryUtils.userInfoUrl}${UserRepositoryUtils.apiKey}";
 
-    final response = await dio.post(requestUrl, data: userInfoRequest.toJson());
+    final response =
+        await _dio.post(requestUrl, data: userInfoRequest.toJson());
 
     final user = User.fromMap(response.data['users'][0]);
 
@@ -30,6 +31,6 @@ class UserRepository {
     final requestUrl =
         "${UserRepositoryUtils.userUpdateUrl}${UserRepositoryUtils.apiKey}";
 
-    await dio.post(requestUrl, data: userUpdateRequest.toJson());
+    await _dio.post(requestUrl, data: userUpdateRequest.toJson());
   }
 }

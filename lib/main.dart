@@ -1,23 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:flutter_pokeapi/src/app/authentication/bloc/authentication_bloc.dart';
 
 import 'package:flutter_pokeapi/src/app/pokemon_details/views/pokemon_details_screen.dart';
 import 'package:flutter_pokeapi/src/repositories/authentication_repository/authentication_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/local_storage_repository/local_storage_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/user_repository/models/models.dart';
 import 'package:flutter_pokeapi/src/repositories/user_repository/user_repository.dart';
 import 'package:flutter_pokeapi/src/utils/app_routes.dart';
 import 'package:flutter_pokeapi/src/widgets/home_screen.dart';
 
-void main() {
-  runApp(PokedexApp());
+void main() async {
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(UserAdapter());
+  Hive.registerAdapter(ProviderUserInfoAdapter());
+
+  final userBox = await Hive.openBox<User>('userBox');
+
+  runApp(PokedexApp(
+    userBox: userBox,
+  ));
 }
 
 class PokedexApp extends StatelessWidget {
+  final Box<User> userBox;
+  PokedexApp({@required this.userBox}) : assert(userBox != null);
+
   final isLoggedIn = false;
   Widget build(context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider(
+          create: (context) => HiveRepository<User>(box: userBox),
+        ),
         RepositoryProvider(
           create: (context) => AuthenticationRepository(),
         ),
@@ -34,6 +53,8 @@ class PokedexApp extends StatelessWidget {
           return AuthenticationBloc(
             userRepository: userRepository,
             authenticationRepository: authenticationRepository,
+            localUserRepository:
+                RepositoryProvider.of<HiveRepository<User>>(context),
           );
         },
         child: PokedexAppView(),

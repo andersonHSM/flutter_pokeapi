@@ -1,14 +1,25 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
+part 'user.g.dart';
+
+@HiveType(typeId: 0)
 class User extends Equatable {
+  @HiveField(1)
   final String idToken;
+  @HiveField(2)
   final String localId;
+  @HiveField(3)
   final String email;
+  @HiveField(4)
   final bool emailVerified;
+  @HiveField(5)
   final String displayName;
+  @HiveField(6)
   final List<ProviderUserInfo> providerUserInfo;
+  @HiveField(7)
   final String photoUrl;
 
   User({
@@ -88,23 +99,32 @@ class User extends Equatable {
       ];
 }
 
+@HiveType(typeId: 1)
 class ProviderUserInfo extends Equatable {
+  @HiveField(1)
   final String providerId;
+  @HiveField(2)
   final String displayName;
+  @HiveField(3)
   final String photoUrl;
+  @HiveField(4)
   final String federatedId;
+  @HiveField(5)
   final String email;
+  @HiveField(6)
   final String rawId;
+  @HiveField(7)
   final String screenName;
 
-  ProviderUserInfo(
-      {this.providerId,
-      this.displayName,
-      this.photoUrl,
-      this.federatedId,
-      this.email,
-      this.rawId,
-      this.screenName});
+  ProviderUserInfo({
+    this.providerId,
+    this.displayName,
+    this.photoUrl,
+    this.federatedId,
+    this.email,
+    this.rawId,
+    this.screenName,
+  });
 
   Map<String, dynamic> toMap() {
     return {

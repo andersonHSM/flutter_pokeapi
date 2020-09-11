@@ -12,6 +12,7 @@ class PokedexListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    // ignore: close_sinks
     final AuthenticationBloc authenticationBloc = BlocProvider.of(context);
     final AuthenticationAuthenticated authenticationState =
         authenticationBloc.state;

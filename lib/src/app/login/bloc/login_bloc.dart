@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_pokeapi/src/app/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_pokeapi/src/app/login/utils/form_status.dart';
 import 'package:flutter_pokeapi/src/repositories/authentication_repository/authentication_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/local_storage_repository/local_storage_repository.dart';
 import 'package:flutter_pokeapi/src/repositories/user_repository/models/models.dart';
 import 'package:flutter_pokeapi/src/repositories/user_repository/user_repository.dart';
 import 'package:flutter_pokeapi/src/utils/form_validations.dart';
@@ -18,17 +19,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserRepository _userRepository;
   final AuthenticationRepository _authenticationRepository;
   final AuthenticationBloc _authenticationBloc;
+  final IORepository<User> _localUserRepository;
 
   LoginBloc({
     @required AuthenticationRepository authenticationRepository,
     @required AuthenticationBloc authenticationBloc,
     @required UserRepository userRepository,
+    @required IORepository<User> localUserRepository,
   })  : assert(authenticationRepository != null),
         assert(authenticationBloc != null),
         assert(userRepository != null),
+        assert(localUserRepository != null),
         _authenticationRepository = authenticationRepository,
         _authenticationBloc = authenticationBloc,
         _userRepository = userRepository,
+        _localUserRepository = localUserRepository,
         super(LoginState());
 
   @override
@@ -37,6 +42,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async* {
     if (event is LoginReset) {
       yield LoginState();
+    } else if (event is LoginTryAutoLogin) {
+      yield await _mapTryAutoLogin(_authenticationBloc);
     } else if (event is LoginDisplayNamelChanged) {
       yield _mapDisplayNameChangedToState(event, state);
     } else if (event is LoginEmailChanged) {
@@ -50,6 +57,32 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else if (event is LoginSubmitted) {
       yield* _mapLoginSubmittedToState(state, _authenticationBloc);
     }
+  }
+
+  Future<LoginState> _mapTryAutoLogin(
+      AuthenticationBloc authenticationBloc) async {
+    try {
+      // TODO - alterar string para variável
+      final user = _localUserRepository.getItem('local_user');
+
+      if (user == null) {
+        authenticationBloc.add(
+          AuthenticationStatusChanged(
+            AuthenticationStatus.unauthenticated,
+          ),
+        );
+        return LoginState();
+      }
+
+      authenticationBloc.add(
+        AuthenticationStatusChanged(
+          AuthenticationStatus.authenticated,
+          user,
+        ),
+      );
+    } catch (_) {}
+
+    return LoginState();
   }
 
   LoginState _mapDisplayNameChangedToState(
@@ -155,10 +188,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final authRequest = _getAuthRequestObject(state);
 
     try {
-      final user = await _authenticationRepository.logIn(authRequest);
+      final loginReturn = await _authenticationRepository.logIn(authRequest);
+
+      final user = await _userRepository.getUser(
+        UserInfoRequest.fromMap(loginReturn.toMap()),
+      );
+
+      // TODO - alterar string para variável
+      await _localUserRepository.addItem('local_user', user);
+
       authenticationBloc.add(AuthenticationStatusChanged(
         AuthenticationStatus.authenticated,
-        user.idToken,
+        user,
       ));
 
       yield state.copyWith(status: FormStatus.submissionSuccess);
