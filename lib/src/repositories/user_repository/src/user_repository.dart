@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../models/models.dart';
-import '../user_repository.dart';
+import './utils.dart';
 
 class UserRepository {
   Dio dio;

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 
-import '../authentication_repository.dart';
+import '../models/models.dart';
 import 'utils.dart';
 
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }

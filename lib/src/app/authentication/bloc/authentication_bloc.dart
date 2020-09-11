@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_pokeapi/src/repositories/authentication_repository/lib/authentication_repository.dart';
-import 'package:flutter_pokeapi/src/repositories/user_repository/lib/models/models.dart';
-import 'package:flutter_pokeapi/src/repositories/user_repository/lib/src/user_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/authentication_repository/authentication_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/user_repository/models/models.dart';
+import 'package:flutter_pokeapi/src/repositories/user_repository/src/user_repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';

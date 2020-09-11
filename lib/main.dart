@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pokeapi/src/app/authentication/bloc/authentication_bloc.dart';
 
 import 'package:flutter_pokeapi/src/app/pokemon_details/views/pokemon_details_screen.dart';
-import 'package:flutter_pokeapi/src/repositories/authentication_repository/lib/authentication_repository.dart';
-import 'package:flutter_pokeapi/src/repositories/user_repository/lib/user_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/authentication_repository/authentication_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/user_repository/user_repository.dart';
 import 'package:flutter_pokeapi/src/utils/app_routes.dart';
 import 'package:flutter_pokeapi/src/widgets/home_screen.dart';
 

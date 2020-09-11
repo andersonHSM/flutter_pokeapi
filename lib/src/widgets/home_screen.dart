@@ -5,8 +5,8 @@ import 'package:flutter_pokeapi/src/app/login/bloc/login_bloc.dart';
 
 import 'package:flutter_pokeapi/src/app/login/views/login_screen.dart';
 import 'package:flutter_pokeapi/src/app/pokedex_list/views/pokedex_list_screen.dart';
-import 'package:flutter_pokeapi/src/repositories/authentication_repository/lib/authentication_repository.dart';
-import 'package:flutter_pokeapi/src/repositories/user_repository/lib/user_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/authentication_repository/authentication_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/user_repository/user_repository.dart';
 
 class HomeScreen extends StatelessWidget {
   @override

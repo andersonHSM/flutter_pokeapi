@@ -5,9 +5,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_pokeapi/src/app/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_pokeapi/src/app/login/utils/form_status.dart';
-import 'package:flutter_pokeapi/src/repositories/authentication_repository/lib/authentication_repository.dart';
-import 'package:flutter_pokeapi/src/repositories/user_repository/lib/models/models.dart';
-import 'package:flutter_pokeapi/src/repositories/user_repository/lib/user_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/authentication_repository/authentication_repository.dart';
+import 'package:flutter_pokeapi/src/repositories/user_repository/models/models.dart';
+import 'package:flutter_pokeapi/src/repositories/user_repository/user_repository.dart';
 import 'package:flutter_pokeapi/src/utils/form_validations.dart';
 import 'package:meta/meta.dart';
 
