@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 class User extends Equatable {
+  final String idToken;
   final String localId;
   final String email;
   final bool emailVerified;
@@ -11,6 +12,7 @@ class User extends Equatable {
   final String photoUrl;
 
   User({
+    this.idToken,
     this.localId,
     this.email,
     this.emailVerified,
@@ -21,6 +23,7 @@ class User extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
+      'idToken': idToken,
       'localId': localId,
       'email': email,
       'emailVerified': emailVerified,
@@ -34,12 +37,17 @@ class User extends Equatable {
     if (map == null) return null;
 
     return User(
+      idToken: map['idToken'],
       localId: map['localId'],
       email: map['email'],
       emailVerified: map['emailVerified'],
       displayName: map['displayName'],
       providerUserInfo: List<ProviderUserInfo>.from(
-          map['providerUserInfo']?.map((x) => ProviderUserInfo.fromMap(x))),
+        map['providerUserInfo']?.map(
+              (x) => ProviderUserInfo.fromMap(x),
+            ) ??
+            null,
+      ),
       photoUrl: map['photoUrl'],
     );
   }
@@ -49,6 +57,7 @@ class User extends Equatable {
   factory User.fromJson(String source) => User.fromMap(json.decode(source));
 
   User copyWith({
+    String idToken,
     String localId,
     String email,
     bool emailVerified,
@@ -57,6 +66,7 @@ class User extends Equatable {
     String photoUrl,
   }) {
     return User(
+      idToken: idToken ?? this.idToken,
       localId: localId ?? this.localId,
       email: email ?? this.email,
       emailVerified: emailVerified ?? this.emailVerified,
@@ -67,8 +77,15 @@ class User extends Equatable {
   }
 
   @override
-  List<Object> get props =>
-      [localId, email, emailVerified, displayName, providerUserInfo, photoUrl];
+  List<Object> get props => [
+        idToken,
+        localId,
+        email,
+        emailVerified,
+        displayName,
+        providerUserInfo,
+        photoUrl
+      ];
 }
 
 class ProviderUserInfo extends Equatable {

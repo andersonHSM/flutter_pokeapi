@@ -5,6 +5,8 @@ class LoginState extends Equatable {
   final FormStatus status;
   final String email;
   final String emailError;
+  final String displayName;
+  final String displayNameError;
   final String password;
   final String passwordError;
   final String passwordConfirm;
@@ -14,6 +16,8 @@ class LoginState extends Equatable {
     this.status,
     this.email,
     this.emailError,
+    this.displayName,
+    this.displayNameError,
     this.password,
     this.passwordError,
     this.passwordConfirm,
@@ -25,6 +29,8 @@ class LoginState extends Equatable {
         status,
         email,
         emailError,
+        displayName,
+        displayNameError,
         password,
         passwordError,
         passwordConfirm,
@@ -35,6 +41,8 @@ class LoginState extends Equatable {
     FormStatus status,
     String email,
     String emailError,
+    String displayName,
+    String displayNameError,
     String password,
     String passwordError,
     String passwordConfirm,
@@ -44,6 +52,8 @@ class LoginState extends Equatable {
       status: status,
       email: email ?? this.email,
       emailError: emailError,
+      displayName: displayName ?? this.displayName,
+      displayNameError: displayNameError,
       password: password ?? this.password,
       passwordError: passwordError,
       passwordConfirm: passwordConfirm ?? this.passwordConfirm,
@@ -56,6 +66,8 @@ class LoginState extends Equatable {
       'status': status,
       'email': email,
       'emailError': emailError,
+      'displayName': displayName,
+      'displayNameError': displayNameError,
       'password': password,
       'passwordError': passwordError,
       'passwordConfirm': passwordConfirm,
@@ -70,6 +82,8 @@ class LoginState extends Equatable {
       status: map['status'],
       email: map['email'],
       emailError: map['emailError'],
+      displayName: map['displayName'],
+      displayNameError: map['displayNameError'],
       password: map['password'],
       passwordError: map['passwordError'],
       passwordConfirm: map['passwordConfirm'],

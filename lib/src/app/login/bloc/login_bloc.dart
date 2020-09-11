@@ -8,39 +8,64 @@ import 'package:flutter_pokeapi/src/app/authentication/bloc/authentication_bloc.
 import 'package:flutter_pokeapi/src/app/login/utils/form_status.dart';
 import 'package:flutter_pokeapi/src/utils/form_validations.dart';
 import 'package:meta/meta.dart';
+import 'package:user_repository/models/models.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  final UserRepository _userRepository;
   final AuthenticationRepository _authenticationRepository;
   final AuthenticationBloc _authenticationBloc;
 
   LoginBloc({
     @required AuthenticationRepository authenticationRepository,
     @required AuthenticationBloc authenticationBloc,
+    @required UserRepository userRepository,
   })  : assert(authenticationRepository != null),
         assert(authenticationBloc != null),
+        assert(userRepository != null),
         _authenticationRepository = authenticationRepository,
         _authenticationBloc = authenticationBloc,
+        _userRepository = userRepository,
         super(LoginState());
 
   @override
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-    if (event is LoginEmailChanged) {
+    if (event is LoginReset) {
+      yield LoginState();
+    } else if (event is LoginDisplayNamelChanged) {
+      yield _mapDisplayNameChangedToState(event, state);
+    } else if (event is LoginEmailChanged) {
       yield _mapEmailChangedToState(event, state);
     } else if (event is LoginPasswordChanged) {
       yield _mapPasswordChangedToState(event, state);
     } else if (event is LoginPasswordConfirmChanged) {
       yield _mapPasswordConfirmChangedToState(event, state);
     } else if (event is SignupSubmitted) {
-      yield* _mapSignupSubmittedToState(state);
+      yield* _mapSignupSubmittedToState(state, _userRepository);
     } else if (event is LoginSubmitted) {
-      print(_authenticationBloc);
       yield* _mapLoginSubmittedToState(state, _authenticationBloc);
     }
+  }
+
+  LoginState _mapDisplayNameChangedToState(
+      LoginDisplayNamelChanged event, LoginState state) {
+    final emptyFieldError =
+        FormValidations.emptyField("Display name", event.displayName);
+
+    if (emptyFieldError != null) {
+      return state.copyWith(
+          displayName: event.displayName, displayNameError: emptyFieldError);
+    }
+
+    return state.copyWith(
+        status: FormStatus.valid,
+        displayName: event.displayName,
+        displayNameError: null);
   }
 
   LoginState _mapEmailChangedToState(
@@ -102,13 +127,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     return AuthRequest.fromMap(stateFormJson);
   }
 
-  Stream<LoginState> _mapSignupSubmittedToState(LoginState state) async* {
-    if (state.status == FormStatus.valid) {
+  Stream<LoginState> _mapSignupSubmittedToState(
+      LoginState state, UserRepository userRepository) async* {
+    if (state.status != FormStatus.invalid) {
       yield state.copyWith(status: FormStatus.submissionInProgress);
       final authRequest = _getAuthRequestObject(state);
 
       try {
-        await _authenticationRepository.signUp(authRequest);
+        final user = await _authenticationRepository.signUp(authRequest);
+
+        final userUpdateRequest = UserUpdateRequest(
+            idToken: user.idToken, displayName: state.displayName);
+
+        await userRepository.updateUserInfo(userUpdateRequest);
 
         yield state.copyWith(status: FormStatus.submissionSuccess);
       } catch (error) {
@@ -132,7 +163,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       yield state.copyWith(status: FormStatus.submissionSuccess);
     } catch (error) {
-      print(error);
       yield state.copyWith(status: FormStatus.submissionFailure);
     }
   }

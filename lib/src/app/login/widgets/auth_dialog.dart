@@ -22,7 +22,7 @@ class AuthDialog extends StatelessWidget {
             value: bloc,
             child: dialog,
           );
-        });
+        }).then((_) => bloc.add(LoginReset()));
   }
 
   @override

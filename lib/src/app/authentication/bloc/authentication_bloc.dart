@@ -59,12 +59,11 @@ class AuthenticationBloc
   }
 
   // TODO - IMPLEMENTAR AÇÃO REAL
-  Future<User> _tryGetUser(String idtoken) async {
+  Future<User> _tryGetUser(String idToken) async {
     try {
       final user =
-          await _userRepository.getUser(UserInfoRequest(idToken: idtoken));
-      print(user.toMap());
-      return user;
+          await _userRepository.getUser(UserInfoRequest(idToken: idToken));
+      return user.copyWith(idToken: idToken);
     } on Exception {
       return null;
     }

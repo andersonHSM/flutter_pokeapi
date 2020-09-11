@@ -49,18 +49,14 @@ class PokedexAppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      builder: (context, state) {
-        return MaterialApp(
-          theme: ThemeData(
-            primarySwatch: Colors.red,
-            accentColor: Colors.yellow[600],
-          ),
-          routes: {
-            AppRoutes.HOME: (ctx) => HomeScreen(state),
-            AppRoutes.POKEMON_DETAILS: (ctx) => PokemonDetailsScreen()
-          },
-        );
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+        accentColor: Colors.yellow[600],
+      ),
+      routes: {
+        AppRoutes.HOME: (ctx) => HomeScreen(),
+        AppRoutes.POKEMON_DETAILS: (ctx) => PokemonDetailsScreen()
       },
     );
   }

@@ -49,7 +49,6 @@ class PokedexListScreen extends StatelessWidget {
                             as List<dynamic>;
                         jsonList.forEach(
                           (element) {
-                            // print(element['weaknesses']);
                             final pokemon = Pokemon.fromMap(element);
                             list.add(pokemon);
                           },
