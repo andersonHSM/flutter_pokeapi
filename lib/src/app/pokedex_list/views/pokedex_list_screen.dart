@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pokeapi/src/app/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_pokeapi/src/models/pokemon.dart';
 import 'package:flutter_pokeapi/src/widgets/pokemon_grid_tile.dart';
 
@@ -10,6 +12,9 @@ class PokedexListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    final AuthenticationBloc authenticationBloc = BlocProvider.of(context);
+    final AuthenticationAuthenticated authenticationState =
+        authenticationBloc.state;
 
     return Scaffold(
       body: Container(
@@ -30,13 +35,33 @@ class PokedexListScreen extends StatelessWidget {
               CustomScrollView(
                 slivers: [
                   SliverAppBar(
+                    title: Text(
+                        "Welcome, ${authenticationState.user.displayName}"),
+                    actions: [
+                      IconButton(
+                        icon: Icon(Icons.exit_to_app),
+                        onPressed: () => authenticationBloc
+                            .add(AuthenticationLogoutRequested()),
+                      )
+                    ],
                     floating: true,
                     pinned: true,
                     snap: true,
                     collapsedHeight: mediaQuery.size.height * 0.09,
                     toolbarHeight: mediaQuery.size.height * 0.08,
-                    flexibleSpace: SafeArea(
-                      child: Image.asset('lib/assets/pokemon-logo.png'),
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          Positioned(
+                            height: 120,
+                            bottom: 8,
+                            child: Image.asset(
+                              'lib/assets/pokemon-logo.png',
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     expandedHeight: mediaQuery.size.height * 0.25,
                   ),
