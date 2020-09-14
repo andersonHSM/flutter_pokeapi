@@ -16,7 +16,6 @@ class AuthenticationBloc
   final AuthenticationRepository _authenticationRepository;
   final UserRepository _userRepository;
   final IORepository<User> _localUserRepository;
-  StreamSubscription<AuthenticationStatus> _authenticationStatusSubscription;
 
   AuthenticationBloc({
     @required AuthenticationRepository authenticationRepository,
@@ -28,10 +27,7 @@ class AuthenticationBloc
         _authenticationRepository = authenticationRepository,
         _userRepository = userRepository,
         _localUserRepository = localUserRepository,
-        super(AuthenticationUnkown()) {
-    _authenticationStatusSubscription = _authenticationRepository.status
-        .listen((status) => add(AuthenticationStatusChanged(status)));
-  }
+        super(AuthenticationUnkown());
 
   @override
   Stream<AuthenticationState> mapEventToState(
@@ -52,7 +48,7 @@ class AuthenticationBloc
       case AuthenticationStatus.unauthenticated:
         return const AuthenticationUnauthenticated();
       case AuthenticationStatus.authenticated:
-        final user = await _tryGetUser(event.user.idToken);
+        final user = await _tryGetUser(event.user?.idToken);
 
         if (user == null) {
           return AuthenticationUnauthenticated();
@@ -84,7 +80,6 @@ class AuthenticationBloc
 
   @override
   Future<void> close() {
-    _authenticationStatusSubscription?.cancel();
     _authenticationRepository.dispose();
     return super.close();
   }

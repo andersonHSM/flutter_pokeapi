@@ -24,13 +24,16 @@ class UserRepository {
     return _user;
   }
 
-  Future<void> updateUserInfo(UserUpdateRequest userUpdateRequest) async {
+  Future<User> updateUserInfo(UserUpdateRequest userUpdateRequest) async {
     // TODO - implementar exceções
     if (userUpdateRequest == null) return null;
 
     final requestUrl =
         "${UserRepositoryUtils.userUpdateUrl}${UserRepositoryUtils.apiKey}";
 
-    await _dio.post(requestUrl, data: userUpdateRequest.toJson());
+    final response =
+        await _dio.post(requestUrl, data: userUpdateRequest.toJson());
+
+    return User.fromMap(response.data);
   }
 }

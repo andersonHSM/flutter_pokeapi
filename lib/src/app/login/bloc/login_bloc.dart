@@ -53,7 +53,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else if (event is LoginPasswordConfirmChanged) {
       yield _mapPasswordConfirmChangedToState(event, state);
     } else if (event is SignupSubmitted) {
-      yield* _mapSignupSubmittedToState(state, _userRepository);
+      yield* _mapSignupSubmittedToState(
+          state, _userRepository, _authenticationBloc);
     } else if (event is LoginSubmitted) {
       yield* _mapLoginSubmittedToState(state, _authenticationBloc);
     }
@@ -161,24 +162,32 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   Stream<LoginState> _mapSignupSubmittedToState(
-      LoginState state, UserRepository userRepository) async* {
-    if (state.status != FormStatus.invalid) {
-      yield state.copyWith(status: FormStatus.submissionInProgress);
-      final authRequest = _getAuthRequestObject(state);
+      LoginState state,
+      UserRepository userRepository,
+      AuthenticationBloc authenticationBloc) async* {
+    // if (state.status != FormStatus.invalid) {
+    yield state.copyWith(status: FormStatus.submissionInProgress);
+    final authRequest = _getAuthRequestObject(state);
 
-      try {
-        final user = await _authenticationRepository.signUp(authRequest);
+    try {
+      final signupReturn = await _authenticationRepository.signUp(authRequest);
 
-        final userUpdateRequest = UserUpdateRequest(
-            idToken: user.idToken, displayName: state.displayName);
+      final userUpdateRequest = UserUpdateRequest(
+          idToken: signupReturn.idToken, displayName: state.displayName);
 
-        await userRepository.updateUserInfo(userUpdateRequest);
+      final user = await userRepository.updateUserInfo(userUpdateRequest);
 
-        yield state.copyWith(status: FormStatus.submissionSuccess);
-      } catch (error) {
-        yield state.copyWith(status: FormStatus.submissionFailure);
-      }
+      await _localUserRepository.addItem('local_user', user);
+      authenticationBloc.add(AuthenticationStatusChanged(
+        AuthenticationStatus.authenticated,
+        user,
+      ));
+
+      yield state.copyWith(status: FormStatus.submissionSuccess);
+    } catch (error) {
+      yield state.copyWith(status: FormStatus.submissionFailure);
     }
+    // }
   }
 
   Stream<LoginState> _mapLoginSubmittedToState(
