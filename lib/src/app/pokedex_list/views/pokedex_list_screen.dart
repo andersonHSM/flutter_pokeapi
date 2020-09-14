@@ -1,21 +1,22 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pokeapi/src/app/authentication/bloc/authentication_bloc.dart';
-import 'package:flutter_pokeapi/src/models/pokemon.dart';
-import 'package:flutter_pokeapi/src/widgets/pokemon_grid_tile.dart';
+import 'package:flutter_pokeapi/src/app/pokedex_list/bloc/pokemon_list_bloc.dart';
+import 'package:flutter_pokeapi/src/app/pokedex_list/widgets/pokemon_list_app_bar.dart';
+import 'package:flutter_pokeapi/src/app/pokedex_list/widgets/pokemon_grid_tile/pokemon_grid_tile.dart';
 
 class PokedexListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
     // ignore: close_sinks
     final AuthenticationBloc authenticationBloc = BlocProvider.of(context);
     final AuthenticationAuthenticated authenticationState =
         authenticationBloc.state;
+
+    final mediaQuery = MediaQuery.of(context);
+
+    BlocProvider.of<PokemonListBloc>(context).add(LoadPokemonListEvent());
 
     return Scaffold(
       body: Container(
@@ -35,51 +36,19 @@ class PokedexListScreen extends StatelessWidget {
               ),
               CustomScrollView(
                 slivers: [
-                  SliverAppBar(
-                    title: Text(
-                        "Welcome, ${authenticationState.user.displayName}"),
-                    actions: [
-                      IconButton(
-                        icon: Icon(Icons.exit_to_app),
-                        onPressed: () => authenticationBloc
-                            .add(AuthenticationLogoutRequested()),
-                      )
-                    ],
-                    floating: true,
-                    pinned: true,
-                    snap: true,
-                    collapsedHeight: mediaQuery.size.height * 0.09,
-                    toolbarHeight: mediaQuery.size.height * 0.08,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          Positioned(
-                            height: 120,
-                            bottom: 8,
-                            child: Image.asset(
-                              'lib/assets/pokemon-logo.png',
-                            ),
+                  PokemonListAppBar(
+                      authenticationState: authenticationState,
+                      authenticationBloc: authenticationBloc,
+                      mediaQuery: mediaQuery),
+                  BlocBuilder<PokemonListBloc, PokemonListState>(
+                    builder: (context, state) {
+                      if (state is PokemonListLoadError) {
+                        return SliverToBoxAdapter(
+                          child: Center(
+                            child: Text('Error while loading pokemons'),
                           ),
-                        ],
-                      ),
-                    ),
-                    expandedHeight: mediaQuery.size.height * 0.25,
-                  ),
-                  FutureBuilder(
-                    future: rootBundle.loadString('lib/fakeData/fakeApi.json'),
-                    builder: (context, snapshot) {
-                      List<Pokemon> list = [];
-                      if (snapshot.hasData) {
-                        final jsonList = json.decode(snapshot.data)['pokemon']
-                            as List<dynamic>;
-                        jsonList.forEach(
-                          (element) {
-                            final pokemon = Pokemon.fromMap(element);
-                            list.add(pokemon);
-                          },
                         );
-
+                      } else if (state is PokemonListLoadSuccess) {
                         return SliverPadding(
                           padding: EdgeInsets.symmetric(
                               horizontal: 15, vertical: 10),
@@ -93,18 +62,13 @@ class PokedexListScreen extends StatelessWidget {
                                         mediaQuery.size.height * 0.5),
                             delegate: SliverChildBuilderDelegate(
                               (context, index) {
-                                final pokemon = list.elementAt(index);
+                                final pokemon =
+                                    state.pokemonList.elementAt(index);
 
                                 return PokemonGridTile(pokemon: pokemon);
                               },
-                              childCount: list.length,
+                              childCount: state.pokemonList.length,
                             ),
-                          ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return SliverToBoxAdapter(
-                          child: Container(
-                            child: Text('erro'),
                           ),
                         );
                       } else {
@@ -119,7 +83,7 @@ class PokedexListScreen extends StatelessWidget {
                         );
                       }
                     },
-                  )
+                  ),
                 ],
               ),
             ],

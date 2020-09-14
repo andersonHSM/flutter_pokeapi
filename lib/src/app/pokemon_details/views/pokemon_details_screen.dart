@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pokeapi/src/app/pokedex_list/bloc/pokemon_list_bloc.dart';
 import 'package:flutter_pokeapi/src/app/pokemon_details/widgets/pokemon_detail.dart';
 
 import 'package:flutter_pokeapi/src/app/pokemon_details/widgets/pokemon_detail_app_bar.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_pokeapi/src/utils/type_to_color_mapper.dart';
 class PokemonDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // print(BlocProvider.of<PokemonListBloc>(context));
     final expandedHeight = 250.0;
     final collapsedHeight = 100.0;
 

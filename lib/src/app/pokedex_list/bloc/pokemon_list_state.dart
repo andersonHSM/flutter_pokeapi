@@ -11,23 +11,15 @@ class PokemonListInitial extends PokemonListState {}
 
 class PokemonListLoading extends PokemonListState {}
 
-class PokemonListLoaded extends PokemonListState {
+class PokemonListLoadSuccess extends PokemonListState {
   final List<Pokemon> pokemonList;
 
-  const PokemonListLoaded(List<Pokemon> pokemonList)
+  const PokemonListLoadSuccess(List<Pokemon> pokemonList)
       : assert(pokemonList != null),
         this.pokemonList = pokemonList;
 
   @override
-  List<Object> get props => [];
-
-  PokemonListLoaded copyWith({
-    List<Pokemon> pokemonList,
-  }) {
-    return PokemonListLoaded(
-      pokemonList ?? this.pokemonList,
-    );
-  }
+  List<Object> get props => [pokemonList];
 }
 
 class PokemonListLoadError extends PokemonListState {}

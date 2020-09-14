@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_pokeapi/src/models/pokemon.dart';
 import 'package:flutter_pokeapi/src/repositories/pokemon_repository/pokemon_repository.dart';
 
@@ -11,7 +12,7 @@ part 'pokemon_list_state.dart';
 class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
   final PokemonRepository _pokemonRepository;
 
-  PokemonListBloc(PokemonRepository pokemonRepository)
+  PokemonListBloc({@required PokemonRepository pokemonRepository})
       : assert(pokemonRepository != null),
         _pokemonRepository = pokemonRepository,
         super(PokemonListInitial());
@@ -32,8 +33,9 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
     try {
       final pokemonList = await pokemonRepository.getPokemons();
 
-      yield PokemonListLoaded(pokemonList);
+      yield PokemonListLoadSuccess(pokemonList);
     } catch (_) {
+      print(_);
       yield PokemonListLoadError();
     }
   }

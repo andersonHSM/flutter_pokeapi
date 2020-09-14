@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_pokeapi/src/models/pokemon.dart';
 
@@ -12,14 +14,11 @@ class PokemonRepository {
   Future<List<Pokemon>> getPokemons() async {
     final response = await _dio.get(_url);
 
-    print(response.data["pokemon"]);
-
     final List<Pokemon> pokemons = [];
 
-    List.from(response.data['pokemon']).forEach((element) {
+    List.from(json.decode(response.data)['pokemon']).forEach((element) {
       pokemons.add(Pokemon.fromMap(element));
     });
-    print(pokemons);
 
     return pokemons;
   }
