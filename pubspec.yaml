@@ -23,10 +23,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_bloc: ^6.0.4
   dio: ^3.0.10
+  mobx: ^1.2.1+2
+  hive: ^1.4.4
+  equatable: ^1.2.5
   cached_network_image: ^2.3.1
   transparent_image: ^1.0.0
+  provider: ^4.3.2+2
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -36,6 +39,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mobx_codegen: ^1.1.0+1
+  build_runner: ^1.10.2 
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
