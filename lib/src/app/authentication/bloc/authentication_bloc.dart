@@ -48,13 +48,20 @@ class AuthenticationBloc
       case AuthenticationStatus.unauthenticated:
         return const AuthenticationUnauthenticated();
       case AuthenticationStatus.authenticated:
-        final user = await _tryGetUser(event.user?.idToken);
+        User user;
+        try {
+          user = await _tryGetUser(event.user?.idToken);
 
-        if (user == null) {
+          if (user == null) {
+            return AuthenticationUnauthenticated();
+          }
+
+          return AuthenticationAuthenticated(user);
+        } catch (e) {
           return AuthenticationUnauthenticated();
         }
 
-        return AuthenticationAuthenticated(user);
+        break;
 
       default:
         return AuthenticationUnkown();
@@ -62,20 +69,16 @@ class AuthenticationBloc
   }
 
   Future<User> _tryGetUser(String idToken) async {
-    try {
-      // TODO - alterar string para variável
-      final localUser = _localUserRepository.getItem('local_user');
+    // TODO - alterar string para variável
+    final localUser = _localUserRepository.getItem('local_user');
 
-      if (localUser != null) {
-        return localUser;
-      }
-
-      final user =
-          await _userRepository.getUser(UserInfoRequest(idToken: idToken));
-      return user.copyWith(idToken: idToken);
-    } on Exception {
-      return null;
+    if (localUser != null) {
+      return localUser;
     }
+
+    final user =
+        await _userRepository.getUser(UserInfoRequest(idToken: idToken));
+    return user.copyWith(idToken: idToken);
   }
 
   @override

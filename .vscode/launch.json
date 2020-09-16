@@ -11,16 +11,10 @@
             "program": "lib/main.dart"
         },
         {
-            "name": "authentication_repository",
-            "cwd": "packages/authentication_repository",
+            "name": "All Tests",
+            "type": "dart",
             "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "user_repository",
-            "cwd": "packages/user_repository",
-            "request": "launch",
-            "type": "dart"
+            "program": "tests/all_tests.dart", // or test/foo for a subset of tests
         }
     ]
 }

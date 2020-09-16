@@ -35,7 +35,6 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
 
       yield PokemonListLoadSuccess(pokemonList);
     } catch (_) {
-      print(_);
       yield PokemonListLoadError();
     }
   }
