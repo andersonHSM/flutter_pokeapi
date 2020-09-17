@@ -9,13 +9,6 @@ import 'package:flutter_pokeapi/src/repositories/local_storage_repository/local_
 import 'package:flutter_pokeapi/src/repositories/user_repository/models/models.dart';
 import 'package:flutter_pokeapi/src/repositories/user_repository/user_repository.dart';
 
-final User user = User(
-  displayName: 'User',
-  email: 'teste@mail.com',
-  idToken: '12312312nkldasjdias897',
-  localId: 'kaskjk',
-);
-
 class AuthenticationRepositoryMock extends Mock
     implements AuthenticationRepository {}
 
@@ -30,17 +23,24 @@ void main() {
   // ignore: close_sinks
   AuthenticationBloc authenticationBloc;
 
-  SignInReturn signInReturn = SignInReturn(
-    displayName: 'User',
-    email: 'teste@mail.com',
-    expiresIn: '3213',
-    idToken: '12312312nkldasjdias897',
-    localId: 'kaskjk',
-    refreshToken: "askdjaksjdasd",
-    registered: true,
-  );
-
   group('Authentication Bloc', () {
+    final User user = User(
+      displayName: 'User',
+      email: 'teste@mail.com',
+      idToken: '12312312nkldasjdias897',
+      localId: 'kaskjk',
+    );
+
+    SignInReturn signInReturn = SignInReturn(
+      displayName: 'User',
+      email: 'teste@mail.com',
+      expiresIn: '3213',
+      idToken: '12312312nkldasjdias897',
+      localId: 'kaskjk',
+      refreshToken: "askdjaksjdasd",
+      registered: true,
+    );
+
     setUp(() {
       localUserRepository = LocalUserRepositoryMock();
       userRepository = UserRepositoryMock();
@@ -88,6 +88,26 @@ void main() {
           user,
         ),
       ),
+      expect: <AuthenticationState>[AuthenticationAuthenticated(user)],
+    );
+
+    blocTest<AuthenticationBloc, AuthenticationState>(
+      'App should unauthenticate when receiving error from login flow',
+      build: () {
+        when(userRepository.getUser(any)).thenAnswer((_) => Future.value(null));
+
+        return authenticationBloc;
+      },
+      verify: (cubit) async {
+        verify(userRepository.getUser(any)).called(1);
+      },
+      act: (bloc) => bloc.add(
+        AuthenticationStatusChanged(
+          AuthenticationStatus.authenticated,
+          user,
+        ),
+      ),
+      expect: <AuthenticationState>[AuthenticationUnauthenticated()],
     );
   });
 }
