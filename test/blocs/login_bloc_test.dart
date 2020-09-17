@@ -99,9 +99,7 @@ void main() {
             .thenAnswer((_) => Future.value(User(displayName: 'Anderson 2')));
         return loginBloc;
       },
-      act: (LoginBloc bloc) {
-        bloc.add(SignupSubmitted());
-      },
+      act: (LoginBloc bloc) => bloc.add(SignupSubmitted()),
       verify: (bloc) async {
         verify(await authenticationRepository.signUp(any)).called(1);
         verify(await userRepository.updateUserInfo(any)).called(1);
